@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.casgan.jobScheduler.dto.CreateJobRequest;
+import com.casgan.jobScheduler.dto.JobExecutionHistoryResponse;
+import com.casgan.jobScheduler.dto.ScheduledJobResponse;
 import com.casgan.jobScheduler.model.JobExecutionHistory;
 import com.casgan.jobScheduler.model.ScheduledJob;
 import com.casgan.jobScheduler.service.JobExecutionHistoryService;
@@ -34,18 +36,24 @@ public class ScheduledJobController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ScheduledJob createJob( @Valid @RequestBody CreateJobRequest request){
-        return service.createJob(request);
+    public ScheduledJobResponse createJob( @Valid @RequestBody CreateJobRequest request){
+        ScheduledJob job = service.createJob(request);
+
+        return ScheduledJobResponse.fromEntity(job);
     }
 
     @GetMapping
-    public List<ScheduledJob> getJobs(){
-        return service.getAllJobs();
+    public List<ScheduledJobResponse> getJobs(){
+        List<ScheduledJob> jobs = service.getAllJobs();
+
+        return jobs.stream().map(ScheduledJobResponse::fromEntity).toList();
     }
 
     @GetMapping("/{id}")
-    public ScheduledJob getJob(@PathVariable Long id){
-        return service.getJob(id);
+    public ScheduledJobResponse getJob(@PathVariable Long id){
+        ScheduledJob job = service.getJob(id);
+
+        return ScheduledJobResponse.fromEntity(job);
     }
 
     @DeleteMapping("/{id}")
@@ -55,10 +63,12 @@ public class ScheduledJobController {
     }
 
     @GetMapping("/{id}/history")
-    public List<JobExecutionHistory> getJobHistory(@PathVariable Long id){
+    public List<JobExecutionHistoryResponse> getJobHistory(@PathVariable Long id){
         service.getJob(id);
 
-        return historyService.getHistory(id);
+        List<JobExecutionHistory> history = historyService.getHistory(id);
+
+        return history.stream().map(JobExecutionHistoryResponse::fromEntity).toList();
     }
     
 }

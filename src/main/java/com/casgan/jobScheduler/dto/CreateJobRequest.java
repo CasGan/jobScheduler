@@ -1,22 +1,32 @@
 package com.casgan.jobScheduler.dto;
 
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
 
 public class CreateJobRequest {
-    @NotBlank
+
+    @NotBlank(message="Job name is required")
+    @Size(max=100, message="Job name cannot exceed 100 characters")
     private String name; 
-    @NotBlank 
+
+
+    @NotBlank(message="Job type is required") 
     private String jobType;
     
+    @Size(max=500, message="Description cannot exceed 500 characters")
     private String description;
 
-    @NotNull
-    @Future
+    @NotNull(message="Scheduled time is required")
+    @Future(message="Scheduled time must be in the future")
     private LocalDateTime scheduledTime;
+
+    public CreateJobRequest(){
+    }
 
     public String getName(){
         return name;

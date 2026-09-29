@@ -3,6 +3,8 @@ package com.casgan.jobScheduler.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.casgan.jobScheduler.model.ExecutionStatus;
@@ -12,6 +14,7 @@ import com.casgan.jobScheduler.repository.JobExecutionHistoryRepository;
 
 @Service
 public class JobExecutionHistoryService {
+        private static final Logger log = LoggerFactory.getLogger(JobExecutionHistoryService.class);
 
     private final JobExecutionHistoryRepository repository;
 
@@ -26,46 +29,18 @@ public class JobExecutionHistoryService {
             ScheduledJob job,
             int attemptNumber
     ) {
-        System.out.println(
-                ">>> startExecution() entered"
-        );
 
-        System.out.println(
-                ">>> History job ID: "
-                + job.getId()
-        );
-
-        System.out.println(
-                ">>> Attempt number: "
-                + attemptNumber
-        );
         JobExecutionHistory history = new JobExecutionHistory();
         history.setJob(job);
         history.setAttemptNumber(attemptNumber);
         history.setStatus(ExecutionStatus.RUNNING);
         history.setStartedAt(LocalDateTime.now());
-        System.out.println(
-                ">>> History object created"
-        );
 
-        System.out.println(
-                ">>> About to call history repository.save()"
-        );
+        JobExecutionHistory saved = repository.save(history);
 
-        JobExecutionHistory saved
-                = repository.save(history);
-
-        System.out.println(
-                ">>> repository.save() returned"
-        );
-
-        System.out.println(
-                ">>> Saved history ID: "
-                + saved.getId()
-        );
+        log.debug("Created execution history id={} jobId={} attempt={}", saved.getId(), job.getId(), attemptNumber);
 
         return saved;
-
     }
 
     public void markSuccess(
