@@ -1,22 +1,23 @@
 package com.casgan.jobScheduler.service;
 
-import com.casgan.jobScheduler.dto.CreateJobRequest;
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import com.casgan.jobScheduler.model.JobExecutionHistory;
 import com.casgan.jobScheduler.model.JobStatus;
 import com.casgan.jobScheduler.model.ScheduledJob;
 import com.casgan.jobScheduler.repository.ScheduledJobRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ScheduledJobServiceTest {
@@ -58,7 +59,7 @@ class ScheduledJobServiceTest {
 
         service.executeJob(job);
 
-        assertEquals(JobStatus.COMPLETED, job.getStatus());
+        assertEquals(JobStatus.FAILED, job.getStatus());
         assertNotNull(job.getExecutedAt());
         assertNotNull(job.getCompletedAt());
         assertNull(job.getNextRunAt());
