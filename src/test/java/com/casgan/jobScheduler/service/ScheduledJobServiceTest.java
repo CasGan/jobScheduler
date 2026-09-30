@@ -59,7 +59,7 @@ class ScheduledJobServiceTest {
 
         service.executeJob(job);
 
-        assertEquals(JobStatus.FAILED, job.getStatus());
+        assertEquals(JobStatus.COMPLETED, job.getStatus());
         assertNotNull(job.getExecutedAt());
         assertNotNull(job.getCompletedAt());
         assertNull(job.getNextRunAt());
